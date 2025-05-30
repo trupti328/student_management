@@ -19,8 +19,27 @@ router.post('/', async (req, res) => {
 //get all students
 router.get('/', async (req, res) => {
     try {
-        const [students] = await db.execute('select * from students');
-        res.json(students);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const offset = (page - 1) * limit;
+
+        const [countResult] = await db.execute('select count(*) as total from students');
+        const total = countResult[0].total;
+        const totalPages = Math.ceil(total / limit);
+
+
+
+
+        const [students] = await db.execute(`SELECT * FROM students LIMIT ${limit} OFFSET ${offset}`);
+
+        res.json({
+            currentPage: page,
+            perPage: limit,
+            totalRecords: total,
+            totalPages: totalPages,
+            students: students
+
+        });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
