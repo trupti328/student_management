@@ -23,6 +23,7 @@ router.get('/', async (req, res) => {
         const limit = parseInt(req.query.limit) || 10;
         const offset = (page - 1) * limit;
 
+
         const [countResult] = await db.execute('select count(*) as total from students');
         const total = countResult[0].total;
         const totalPages = Math.ceil(total / limit);
@@ -117,6 +118,21 @@ router.post('/marks', async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
-})
+});
+
+//get marks by ID 
+router.get('/:id/marks', async (req, res) => {
+    const { id } = req.params;
+    try {
+
+        const [marks] = await db.execute('select subject, score from marks where student_id = ?', [id]);
+        res.json({ marks });
+
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+
+    }
+});
+
 
 module.exports = router;
