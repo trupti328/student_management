@@ -5,7 +5,7 @@ List all students with pagination
 
 Search students by name or email
 
-Perform CRUD operations (if extended)
+Perform CRUD operations
 
 Backend with Node.js + Express + MySQL
 
